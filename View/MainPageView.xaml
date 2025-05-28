@@ -20,14 +20,18 @@
             Spacing="25">
             <Grid>
                 <Label Text="{Binding ConnectionStatus}" HorizontalOptions="Start" FontSize="Large" FontAttributes="Bold" TextColor="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusToTextColorConverter}}"/>
-                <Button x:Name="btnConnectDevice" Text="连接设备" HorizontalOptions="End" Command="{Binding ConnectCommand}"/>
+                <Button Text="连接设备" HorizontalOptions="End" Command="{Binding ConnectCommand}"/>
             </Grid>
             <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding IsToggled, Source={x:Reference consoleSwitch}, Converter={StaticResource IsExtendedToIsVisableConverter}}">
                 <Label Text="接收数据:"/>
-                <Editor IsReadOnly="True" Text="{Binding DataRecieved}" MinimumHeightRequest="100"/>
+                <ScrollView Orientation="Vertical" MinimumHeightRequest="100">
+                    <Editor IsReadOnly="True" Text="{Binding DataRecieved}"/>
+                </ScrollView>
+                <Button Text="清空" Command="{Binding ClearCommand}"/>
+                <Line/>
                 <Label Text="发送数据:"/>
-                <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="100"/>
-                <Button x:Name="btnSendData" Text="发送" Command="{Binding SendDataCommand}"/>
+                <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="50"/>
+                <Button Text="发送" Command="{Binding SendDataCommand}"/>
             </VerticalStackLayout>
             <HorizontalStackLayout>
                 <Label Text="控制台:" VerticalTextAlignment="Center"/>
