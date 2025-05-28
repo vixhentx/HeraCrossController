@@ -10,13 +10,17 @@
     </ContentPage.BindingContext>
     <ContentPage.Resources>
         <converters:IsExtendedToIsVisableConverter x:Key="IsExtendedToIsVisableConverter"/>
+        <converters:ConnectionStatusToTextColorConverter x:Key="ConnectionStatusToTextColorConverter"/>
     </ContentPage.Resources>
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <Label Text="{Binding ConnectionStatus}"/>
-            <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding IsToggled, Source={x:Reference consoleSwitch},Converter={StaticResource IsExtendedToIsVisableConverter}}">
+            <Grid>
+                <Label Text="{Binding ConnectionStatus}" HorizontalOptions="Start" FontSize="Large" FontAttributes="Bold" TextColor="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusToTextColorConverter}}"/>
+                <Button x:Name="btnConnectDevice" Text="连接设备" HorizontalOptions="End"/>
+            </Grid>
+            <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding IsToggled, Source={x:Reference consoleSwitch}, Converter={StaticResource IsExtendedToIsVisableConverter}}">
                 <Label Text="接收数据:"/>
                 <Editor IsReadOnly="True" Text="{Binding DataRecieved}" MinimumHeightRequest="100"/>
                 <Label Text="发送数据:"/>
