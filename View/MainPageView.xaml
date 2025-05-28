@@ -16,7 +16,7 @@
             Padding="30,0"
             Spacing="25">
             <Label Text="{Binding ConnectionStatus}"/>
-            <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding ConsoleVisibility}">
+            <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding IsToggled, Source={x:Reference consoleSwitch},Converter={StaticResource IsExtendedToIsVisableConverter}}">
                 <Label Text="接收数据:"/>
                 <Editor IsReadOnly="True" Text="{Binding DataRecieved}" MinimumHeightRequest="100"/>
                 <Label Text="发送数据:"/>
@@ -24,8 +24,8 @@
                 <Button Text="发送"/>
             </VerticalStackLayout>
             <HorizontalStackLayout>
-                <Label Text="控制台:"/>
-                <Switch x:Name="consoleSwitch" IsToggled="{Binding IsConsoleExtended}"/>
+                <Label Text="控制台:" VerticalTextAlignment="Center"/>
+                <Switch x:Name="consoleSwitch" IsToggled="False"/>
             </HorizontalStackLayout>
             <FlexLayout x:Name="controllerPanel">
                 
