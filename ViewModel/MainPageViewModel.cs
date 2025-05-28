@@ -19,7 +19,7 @@ namespace HeraCrossController.ViewModel
         public string DataRecieved { get; set; }
         public string DataToSend { get; set; }
 
-        Command _connectCommand, _sendDataCommand, _clearCommand;
+        protected readonly Command _connectCommand, _sendDataCommand, _clearCommand, _sendSimpleCommand;
 
         [DoNotNotify]
         public Command ConnectCommand => _connectCommand;
@@ -27,6 +27,8 @@ namespace HeraCrossController.ViewModel
         public Command SendDataCommand => _sendDataCommand;
         [DoNotNotify]
         public Command ClearCommand => _clearCommand;
+        [DoNotNotify]
+        public Command SendSimpleCommand => _sendSimpleCommand;
 
         public MainPageViewModel()
         {
@@ -46,7 +48,7 @@ namespace HeraCrossController.ViewModel
                 {
                     throw new NotImplementedException();
                 },
-                canExecute: () => ConnectionStatus== ConnectionStatusEnum.Connected
+                canExecute: () => ConnectionStatus == ConnectionStatusEnum.Connected
                 );
             _clearCommand = new Command(
                 execute: () =>
@@ -54,11 +56,20 @@ namespace HeraCrossController.ViewModel
                     DataRecieved = "";
                 }
                 );
+            _sendSimpleCommand = new Command(
+                execute: (object arg) =>
+                {
+                    if (arg == null || arg is not int cmd) return;
+                    
+                },
+                canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
+                );
         }
 
         void RefreshCanExecutes()
         {
             SendDataCommand.ChangeCanExecute();
+            SendSimpleCommand.ChangeCanExecute();
         }
     }
 }
