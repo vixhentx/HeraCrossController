@@ -73,7 +73,7 @@ namespace HeraCrossController.Platforms.Android
                         {
                             ret.Add(buffer[i]);
                         }
-                        OnDataRecieved(ret);
+                        MainThread.BeginInvokeOnMainThread(() => OnDataRecieved(ret));
                     }
                 }
                 catch(Exception ex) 

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:HeraCrossController.ViewModel"
+             xmlns:converters="clr-namespace:HeraCrossController.Converter"
+             x:Class="HeraCrossController.MainPage"
+             Title="HeraCrossController">
+    <ContentPage.BindingContext>
+        <viewmodels:MainPageViewModel x:Name="viewmodel"/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <converters:IsExtendedToIsVisableConverter x:Key="IsExtendedToIsVisableConverter"/>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Label Text="{Binding ConnectionStatus}"/>
+            <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding ConsoleVisibility}">
+                <Label Text="接收数据:"/>
+                <Editor IsReadOnly="True" Text="{Binding DataRecieved}" MinimumHeightRequest="100"/>
+                <Label Text="发送数据:"/>
+                <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="100"/>
+                <Button Text="发送"/>
+            </VerticalStackLayout>
+            <HorizontalStackLayout>
+                <Label Text="控制台:"/>
+                <Switch x:Name="consoleSwitch" IsToggled="{Binding IsConsoleExtended}"/>
+            </HorizontalStackLayout>
+            <FlexLayout x:Name="controllerPanel">
+                
+            </FlexLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
