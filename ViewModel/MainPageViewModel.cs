@@ -1,4 +1,6 @@
 ﻿using HeraCrossController.Model;
+using HeraCrossController.Service;
+using Microsoft.Maui.Controls.Compatibility.Platform.UWP;
 using PropertyChanged;
 
 namespace HeraCrossController.ViewModel
@@ -6,7 +8,7 @@ namespace HeraCrossController.ViewModel
     [AddINotifyPropertyChangedInterface]
     public class MainPageViewModel
     {
-        public ConnectionStatusEnum ConnectionStatus { get; set; }
+        public ConnectionStatusEnum ConnectionStatus => bluetoothService.ConnectionStatus;
         public string DataRecieved { get; set; }
         public string DataToSend { get; set; }
 
@@ -21,6 +23,7 @@ namespace HeraCrossController.ViewModel
         [DoNotNotify]
         public Command SendSimpleCommand => _sendSimpleCommand;
 
+        private readonly BluetoothService bluetoothService = new();
         public MainPageViewModel()
         {
             DataRecieved = string.Empty;
@@ -29,6 +32,8 @@ namespace HeraCrossController.ViewModel
             _connectCommand = new Command(
                 execute: () =>
                 {
+                    var devices = bluetoothService.ScanForDevices();
+                    Console.WriteLine(devices.ToString());
                     RefreshCanExecutes();
                 }
                 );
