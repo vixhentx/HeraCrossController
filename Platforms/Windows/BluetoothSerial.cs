@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace HeraCrossController.Platforms.Windows
 {
-    //异常都在外面Catch
     public class BluetoothSerial : IBluetoothSerial
     {
         private BluetoothClient? _bluetoothClient;
@@ -45,7 +44,6 @@ namespace HeraCrossController.Platforms.Windows
             var address = BluetoothAddress.Parse(device.Address);
             var serviceGuid = new Guid(IBluetoothSerial.SPP_UUID);
 
-            Debug.WriteLine("尝试连接");
             await Task.Run(() => _bluetoothClient.Connect(address, serviceGuid));
 
             if (!_bluetoothClient.Connected)
@@ -137,11 +135,11 @@ namespace HeraCrossController.Platforms.Windows
             {
                 await DisconnectAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"接收数据出错: {ex.Message}");
                 await DisconnectAsync();
                 ConnectionStatus = ConnectionStatusEnum.Error;
+                throw;
             }
         }
     }
