@@ -18,13 +18,13 @@ namespace HeraCrossController.Platforms.Windows
     {
         private BluetoothClient? _bluetoothClient;
         private NetworkStream? _networkStream;
-        private CancellationTokenSource? _receiveCancellationTokenSource;
+        private CancellationTokenSource? _cts;
         private BluetoothDeviceInfo? _connectedDevice;
         private ConnectionStatusEnum _connectionStatus = ConnectionStatusEnum.Disconnected;
         public ConnectionStatusEnum ConnectionStatus
         {
             get => _connectionStatus;
-            set
+            private set
             {
                 _connectionStatus = value;
                 OnConnectionStatusChanged?.Invoke(this, value);
@@ -58,14 +58,14 @@ namespace HeraCrossController.Platforms.Windows
             _connectedDevice = new BluetoothDeviceInfo(address);
             ConnectionStatus = ConnectionStatusEnum.Connected;
 
-            _receiveCancellationTokenSource = new CancellationTokenSource();
-            _ = Task.Run(() => ReceiveDataAsync(_receiveCancellationTokenSource.Token));
+            _cts = new CancellationTokenSource();
+            _ = Task.Run(() => ReceiveDataAsync(_cts.Token));
         }
 
 
         public async Task DisconnectAsync()
         {
-            _receiveCancellationTokenSource?.Cancel();
+            _cts?.Cancel();
 
             if (_networkStream != null)
             {

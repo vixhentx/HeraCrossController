@@ -10,7 +10,15 @@ namespace HeraCrossController.Converters
 {
     public class ConnectionStatusToTextColorConverter : IValueConverter
     {
-        private static Color []color_table=[Colors.Red,Colors.Green,Colors.Blue,Colors.Yellow,Colors.DarkRed];
+        private static Color []color_table =
+            [
+                Colors.Red,//Disconnected
+                Colors.Green,//Connected
+                Colors.Blue,//Connecting
+                Colors.Yellow,//Discovering
+                Colors.Orange,//Disconnecting
+                Colors.DarkRed//Error
+            ];
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             return (value is ConnectionStatusEnum v ? color_table[((int)v)] : Colors.Grey);
