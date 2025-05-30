@@ -8,7 +8,7 @@ namespace HeraCrossController.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class MainPageViewModel
     {
-        public ConnectionStatusEnum ConnectionStatus => serial.ConnectionStatus;
+        public ConnectionStatusEnum ConnectionStatus { get; set; }
         public string DataRecieved { get; set; }
         public string DataToSend { get; set; }
 
@@ -32,19 +32,23 @@ namespace HeraCrossController.ViewModels
             DataToSend = string.Empty;
 
             serial.OnDataReceived += OnRecievedData;
+            serial.OnConnectionStatusChanged += (sender, e) =>
+            {
+                ConnectionStatus = e;
+                RefreshCanExecutes();
+            };
 
             _connectCommand = new Command(
                 execute: async () =>
                 {
-                    DataRecieved += "发现设备中:";
+                    DataRecieved += "发现设备中:\n";
                     var devices = await serial.DiscoverDevicesAsync();
                     if (devices == null) return;
-                    DataRecieved += "发现的设备:";
+                    DataRecieved += "发现的设备:\n";
                     foreach(var device in devices)
                     {
-                        DataRecieved += string.Format("Name: %s, Address: %s \n", device.Name, device.Address);
+                        DataRecieved += $"Name: {device.Name}, Address: {device.Address} \n";
                     }
-                    RefreshCanExecutes();
                 }
                 );
             _sendDataCommand = new Command(

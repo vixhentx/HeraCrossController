@@ -16,5 +16,6 @@ namespace HeraCrossController.Interfaces
         Task SendDataAsync(Memory<byte> data);
         ConnectionStatusEnum ConnectionStatus { get; }
         event EventHandler<Memory<byte>> OnDataReceived;
+        event EventHandler<ConnectionStatusEnum> OnConnectionStatusChanged;
     }
 }

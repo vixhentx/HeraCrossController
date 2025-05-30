@@ -11,6 +11,7 @@ namespace HeraCrossController.Models
         Disconnected,
         Connected,
         Connecting,
+        Discovering,
         Error
     }
 }

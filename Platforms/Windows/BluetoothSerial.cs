@@ -20,9 +20,19 @@ namespace HeraCrossController.Platforms.Windows
         private NetworkStream? _networkStream;
         private CancellationTokenSource? _receiveCancellationTokenSource;
         private BluetoothDeviceInfo? _connectedDevice;
-        public ConnectionStatusEnum ConnectionStatus { get; private set; }
+        private ConnectionStatusEnum _connectionStatus = ConnectionStatusEnum.Disconnected;
+        public ConnectionStatusEnum ConnectionStatus
+        {
+            get => _connectionStatus;
+            set
+            {
+                _connectionStatus = value;
+                OnConnectionStatusChanged?.Invoke(this, value);
+            }
+        }
 
         public event EventHandler<Memory<byte>>? OnDataReceived;
+        public event EventHandler<ConnectionStatusEnum>? OnConnectionStatusChanged;
 
         public async Task ConnectAsync(BluetoothSerialDevice device)
         {
@@ -79,10 +89,13 @@ namespace HeraCrossController.Platforms.Windows
         public async Task<List<BluetoothSerialDevice>?> DiscoverDevicesAsync()
         {
             using var t_client = new BluetoothClient();
+            var last_stat = ConnectionStatus;
+            ConnectionStatus = ConnectionStatusEnum.Discovering;
             var devices = await Task.Run(() => t_client.DiscoverDevices(
-                maxDevices: 10
+                maxDevices: 6
             ));
 
+            ConnectionStatus = last_stat;
             return devices
                 .Where(d => d.DeviceName != null)
                 .Select(d => BluetoothSerialDevice.Create(d.DeviceName,d.DeviceAddress.ToString()))
