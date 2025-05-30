@@ -10,8 +10,9 @@ namespace HeraCrossController.Interfaces
     public interface IBluetoothSerial
     {
         public const string SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
-        Task<List<BluetoothSerialDevice>> DiscoverDevicesAsync();
+        Task<List<BluetoothSerialDevice>?> DiscoverDevicesAsync();
         Task ConnectAsync(BluetoothSerialDevice device);
+        Task DisconnectAsync();
         Task SendDataAsync(Memory<byte> data);
         ConnectionStatusEnum ConnectionStatus { get; }
         event EventHandler<Memory<byte>> OnDataReceived;

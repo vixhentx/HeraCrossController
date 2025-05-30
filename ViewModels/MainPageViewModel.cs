@@ -1,6 +1,7 @@
 ﻿using HeraCrossController.Interfaces;
 using HeraCrossController.Models;
 using PropertyChanged;
+using System.Text;
 
 namespace HeraCrossController.ViewModels
 {
@@ -23,16 +24,26 @@ namespace HeraCrossController.ViewModels
         public Command SendSimpleCommand => _sendSimpleCommand;
 
 
-        private IBluetoothSerial serial;
+        private readonly IBluetoothSerial serial;
         public MainPageViewModel(IBluetoothSerial bluetoothSerial)
         {
             serial = bluetoothSerial;
             DataRecieved = string.Empty;
             DataToSend = string.Empty;
 
+            serial.OnDataReceived += OnRecievedData;
+
             _connectCommand = new Command(
-                execute: () =>
+                execute: async () =>
                 {
+                    DataRecieved += "发现设备中:";
+                    var devices = await serial.DiscoverDevicesAsync();
+                    if (devices == null) return;
+                    DataRecieved += "发现的设备:";
+                    foreach(var device in devices)
+                    {
+                        DataRecieved += string.Format("Name: %s, Address: %s \n", device.Name, device.Address);
+                    }
                     RefreshCanExecutes();
                 }
                 );
@@ -63,6 +74,10 @@ namespace HeraCrossController.ViewModels
         {
             SendDataCommand.ChangeCanExecute();
             SendSimpleCommand.ChangeCanExecute();
+        }
+        void OnRecievedData(object? sender, Memory<byte> e)
+        {
+            DataRecieved+=Encoding.UTF8.GetString(e.ToArray(), 0, e.Length) + "\n";
         }
     }
 }

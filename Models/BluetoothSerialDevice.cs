@@ -12,7 +12,14 @@ namespace HeraCrossController.Models
         string _name = "", _uuid = "";
         bool _paired = false;
         public string Name => _name;
-        public string UUID => _uuid;
-        public bool IsPaired => _paired;
+        public string Address => _uuid;
+        public static BluetoothSerialDevice Create(string name, string uuid)
+        {
+            return new()
+            {
+                _name = name,
+                _uuid = uuid
+            };
+        }
     }
 }

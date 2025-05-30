@@ -9,6 +9,8 @@ namespace HeraCrossController.Models
     public enum ConnectionStatusEnum
     {
         Disconnected,
-        Connected
+        Connected,
+        Connecting,
+        Error
     }
 }
