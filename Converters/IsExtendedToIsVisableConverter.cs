@@ -1,24 +1,22 @@
-﻿using HeraCrossController.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeraCrossController.Converter
+namespace HeraCrossController.Converters
 {
-    public class ConnectionStatusToTextColorConverter : IValueConverter
+    public class IsExtendedToIsVisableConverter : IValueConverter
     {
-        private static Color []color_table=[Colors.Red,Colors.Green];
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return (value is ConnectionStatusEnum v ? color_table[((int)v)] : Colors.Grey);
+            return (value is bool v && v) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return 0;
         }
     }
 }

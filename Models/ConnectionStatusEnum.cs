@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeraCrossController.Model
+namespace HeraCrossController.Models
 {
     public enum ConnectionStatusEnum
     {

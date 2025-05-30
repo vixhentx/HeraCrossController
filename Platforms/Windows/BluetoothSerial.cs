@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeraCrossController.Platforms.Android
+namespace HeraCrossController.Platforms.Windows
 {
     public class BluetoothSerial : IBluetoothSerial
     {
-        public ConnectionStatusEnum ConnectionStatus => throw new NotImplementedException();
+        public ConnectionStatusEnum ConnectionStatus { get; private set; }
 
         public event EventHandler<Memory<byte>>? OnDataReceived;
 

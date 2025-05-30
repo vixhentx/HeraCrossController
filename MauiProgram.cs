@@ -14,7 +14,13 @@ namespace HeraCrossController
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
+#if ANDROID
+            builder.Services.AddSingleton<Interfaces.IBluetoothSerial, Platforms.Android.BluetoothSerial>();
+#elif WINDOWS
+            builder.Services.AddSingleton<Interfaces.IBluetoothSerial, Platforms.Windows.BluetoothSerial>();
+#endif
+            builder.Services.AddTransient<ViewModels.MainPageViewModel>();
+            builder.Services.AddTransient<Views.MainPageView>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

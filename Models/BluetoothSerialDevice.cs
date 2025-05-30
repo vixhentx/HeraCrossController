@@ -1,11 +1,11 @@
-﻿using HeraCrossController.Interface;
+﻿using HeraCrossController.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeraCrossController.Model
+namespace HeraCrossController.Models
 {
     public class BluetoothSerialDevice
     {
