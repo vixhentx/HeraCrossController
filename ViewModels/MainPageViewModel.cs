@@ -44,9 +44,10 @@ namespace HeraCrossController.ViewModels
                     DataRecieved += "发现设备中:\n";
                     try
                     {
-                        var devices = await serial.DiscoverDevicesAsync();
-                        if (devices == null) return;
+                        var all_devices = (await serial.DiscoverDevicesAsync());
+                        List<BluetoothSerialDevice>? devices = all_devices?.Where((d) => d.Name == "HC-02").ToList();
                         DataRecieved += "发现的设备:\n";
+                        if (devices == null) return;
                         foreach (var device in devices)
                         {
                             DataRecieved += $"Name: {device.Name}, Address: {device.Address} \n";
