@@ -3,15 +3,17 @@
     public class BluetoothSerialDevice
     {
         string _name = "", _address = "";
+        bool _isPaired = false ;
         public string Name => _name;
         public string Address => _address;
-        public static BluetoothSerialDevice Create(string name, string address)
+        public bool IsPaired => _isPaired;
+
+        public BluetoothSerialDevice(string name, string address, bool isPaired = false)
         {
-            return new()
-            {
-                _name = name,
-                _address = address
-            };
+            _name = name;
+            _address = address;
+            _isPaired = isPaired;
         }
+
     }
 }

@@ -52,6 +52,7 @@ namespace HeraCrossController.ViewModels
                         {
                             DataRecieved += $"Name: {device.Name}, Address: {device.Address} \n";
                         }
+
                     }
                     catch(Exception ex)
                     {
@@ -89,7 +90,7 @@ namespace HeraCrossController.ViewModels
         }
         void OnRecievedData(object? sender, Memory<byte> e)
         {
-            DataRecieved+=Encoding.UTF8.GetString(e.ToArray(), 0, e.Length) + "\n";
+            DataRecieved+=$"[HC-02]: {Encoding.UTF8.GetString(e.ToArray(), 0, e.Length)} \n";
         }
     }
 }

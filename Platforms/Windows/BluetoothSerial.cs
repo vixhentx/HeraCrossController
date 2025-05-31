@@ -96,7 +96,7 @@ namespace HeraCrossController.Platforms.Windows
             ConnectionStatus = last_stat;
             return devices
                 .Where(d => d.DeviceName != null)
-                .Select(d => BluetoothSerialDevice.Create(d.DeviceName,d.DeviceAddress.ToString()))
+                .Select(d => new BluetoothSerialDevice(name: d.DeviceName,address: d.DeviceAddress.ToString()))
                 .ToList();
         }
 

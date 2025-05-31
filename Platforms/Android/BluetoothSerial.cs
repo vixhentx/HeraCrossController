@@ -122,19 +122,24 @@ namespace HeraCrossController.Platforms.Android
             // 添加新发现的设备
             foreach (var device in receiver.DiscoveredDevices)
             {
-                devices.Add(BluetoothSerialDevice.Create(
-                    device.Name ?? "Unknown",
-                    device.Address
+                devices.Add(new(
+                    name: device.Name ?? "Unknown",
+                    address: device.Address ?? "Unknown",
+                    isPaired: false
                 ));
             }
 
             //旧设备
-            foreach (var d in _adapter.BondedDevices)
+            if (_adapter.BondedDevices != null)
             {
-                devices.Add(BluetoothSerialDevice.Create(
-                    d.Name ?? "Unknown",
-                    d.Address
-                ));
+                foreach (var d in _adapter.BondedDevices)
+                {
+                    devices.Add(new(
+                        d.Name ?? "Unknown",
+                        d.Address ?? "Unknown",
+                        isPaired: true
+                    ));
+                }
             }
 
             ConnectionStatus = last_status;
