@@ -42,12 +42,19 @@ namespace HeraCrossController.ViewModels
                 execute: async () =>
                 {
                     DataRecieved += "发现设备中:\n";
-                    var devices = await serial.DiscoverDevicesAsync();
-                    if (devices == null) return;
-                    DataRecieved += "发现的设备:\n";
-                    foreach(var device in devices)
+                    try
                     {
-                        DataRecieved += $"Name: {device.Name}, Address: {device.Address} \n";
+                        var devices = await serial.DiscoverDevicesAsync();
+                        if (devices == null) return;
+                        DataRecieved += "发现的设备:\n";
+                        foreach (var device in devices)
+                        {
+                            DataRecieved += $"Name: {device.Name}, Address: {device.Address} \n";
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        DataRecieved += $"异常: { ex.Message} \n";
                     }
                 }
                 );

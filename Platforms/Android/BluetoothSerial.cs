@@ -13,7 +13,6 @@ namespace HeraCrossController.Platforms.Android
         private readonly UUID SPP_UUID = UUID.FromString(IBluetoothSerial.SPP_UUID);
         private ConnectionStatusEnum _connectionStatus = ConnectionStatusEnum.Disconnected;
         private readonly BluetoothAdapter _adapter = BluetoothAdapter.DefaultAdapter ?? throw new InvalidOperationException("该设备不支持蓝牙");
-        private CancellationTokenSource? _cts;
         private Context _context = Platform.AppContext;
         private BluetoothSocket? _socket;
         private Stream? _inputStream;
@@ -89,14 +88,17 @@ namespace HeraCrossController.Platforms.Android
         public async Task<List<BluetoothSerialDevice>?> DiscoverDevicesAsync()
         {
             await EnsureBluetoothReady();
+
+            if (_adapter.IsDiscovering)
+                _adapter.CancelDiscovery();
+
+
+
             List<BluetoothSerialDevice> devices = [];
             TaskCompletionSource<bool> discoveryCompletion = new();
             BluetoothReceiver receiver = new(discoveryCompletion);
 
-            _context.RegisterReceiver(
-                receiver,
-                new IntentFilter(BluetoothDevice.ActionFound)
-            );
+            _context.RegisterReceiver(receiver,new IntentFilter(BluetoothDevice.ActionFound));
 
             if (!_adapter.StartDiscovery())
             {
@@ -104,11 +106,17 @@ namespace HeraCrossController.Platforms.Android
                 throw new Exception("无法发现设备");
             }
 
+            var last_status = ConnectionStatus;
+            ConnectionStatus = ConnectionStatusEnum.Discovering;
 
 
 
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5));
+            var completedTask = await Task.WhenAny(discoveryCompletion.Task, timeoutTask);
 
-            await discoveryCompletion.Task;
+            if (completedTask == timeoutTask)
+                _adapter.CancelDiscovery();
+            
             _context.UnregisterReceiver(receiver);
 
             // 添加新发现的设备
@@ -129,6 +137,8 @@ namespace HeraCrossController.Platforms.Android
                 ));
             }
 
+            ConnectionStatus = last_status;
+
             return devices;
         }
 
@@ -146,6 +156,7 @@ namespace HeraCrossController.Platforms.Android
 
             // 检查权限
             await Permissions.RequestAsync<Permissions.Bluetooth>();
+            await Permissions.RequestAsync<Permissions.LocationWhenInUse>();    
 
             // 开启蓝牙
             if (!_adapter.IsEnabled)
