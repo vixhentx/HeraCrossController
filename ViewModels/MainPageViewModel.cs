@@ -24,15 +24,17 @@ namespace HeraCrossController.ViewModels
         public Command SendSimpleCommand => _sendSimpleCommand;
 
 
-        private readonly IBluetoothSerial serial;
-        public MainPageViewModel(IBluetoothSerial bluetoothSerial)
+        private readonly IBluetoothSerial _serial;
+        private readonly IDialogService _dialogService;
+        public MainPageViewModel(IBluetoothSerial bluetoothSerial,IDialogService dialogService)
         {
-            serial = bluetoothSerial;
+            _serial = bluetoothSerial;
+            _dialogService = dialogService;
             DataRecieved = string.Empty;
             DataToSend = string.Empty;
 
-            serial.OnDataReceived += OnRecievedData;
-            serial.OnConnectionStatusChanged += (sender, e) =>
+            _serial.OnDataReceived += OnRecievedData;
+            _serial.OnConnectionStatusChanged += (sender, e) =>
             {
                 ConnectionStatus = e;
                 RefreshCanExecutes();
@@ -44,7 +46,7 @@ namespace HeraCrossController.ViewModels
                     DataRecieved += "发现设备中:\n";
                     try
                     {
-                        var all_devices = (await serial.DiscoverDevicesAsync());
+                        var all_devices = (await _serial.DiscoverDevicesAsync());
                         List<BluetoothSerialDevice>? devices = all_devices?.Where((d) => d.Name == "HC-02").ToList();
                         DataRecieved += "发现的设备:\n";
                         if (devices == null) return;
@@ -56,7 +58,9 @@ namespace HeraCrossController.ViewModels
                     }
                     catch(Exception ex)
                     {
-                        DataRecieved += $"异常: { ex.Message} \n";
+                        string str = $"异常: { ex.Message} \n";
+                        DataRecieved += str;
+                        _dialogService.ShowMessageBox(str,"异常");
                     }
                 }
                 );

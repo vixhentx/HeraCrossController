@@ -19,8 +19,11 @@ namespace HeraCrossController
 #elif WINDOWS
             builder.Services.AddSingleton<Interfaces.IBluetoothSerial, Platforms.Windows.BluetoothSerial>();
 #endif
+            builder.Services.AddSingleton<Interfaces.IDialogService,Services.DialogService>();
+
             builder.Services.AddTransient<ViewModels.MainPageViewModel>();
             builder.Services.AddTransient<Views.MainPageView>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
