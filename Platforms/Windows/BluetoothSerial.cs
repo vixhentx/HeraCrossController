@@ -118,7 +118,7 @@ namespace HeraCrossController.Platforms.Windows
             await _networkStream.FlushAsync();
 
             ConnectionStatus = status;
-        }
+         }
         private async void ReceiveDataAsync(CancellationToken token)
         {
             var buffer = new byte[1024];

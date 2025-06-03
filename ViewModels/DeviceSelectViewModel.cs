@@ -17,6 +17,7 @@ namespace HeraCrossController.ViewModels
         public required string Confirm { get; set; }
         public BluetoothSerialDevice? SelectedDevice { get; set; }
 
+        public TaskCompletionSource<BluetoothSerialDevice?> SelectionTask { get; } = new();
 
     }
 }

@@ -21,7 +21,7 @@ namespace HeraCrossController.Services
             };
             Views.DeviceSelectView popup = new(vm);
             await _mainpage.Navigation.PushModalAsync(popup);
-            return vm.SelectedDevice;
+            return await vm.SelectionTask.Task;
         }
 
         public void ShowMessageBox(string message, string title = "提示", string confirm = "OK")
