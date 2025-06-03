@@ -152,7 +152,12 @@ namespace HeraCrossController.Platforms.Android
             if (ConnectionStatus != ConnectionStatusEnum.Connected)
                 throw new InvalidOperationException("蓝牙未连接");
 
+            ConnectionStatusEnum status = ConnectionStatus;
+            ConnectionStatus = ConnectionStatusEnum.Sending;
+
             await _outputStream.WriteAsync(data);
+
+            ConnectionStatus = status;
         }
         private async Task EnsureBluetoothReady()
         {

@@ -17,6 +17,7 @@ namespace HeraCrossController.Converters
                 Colors.Blue,//Connecting
                 Colors.Yellow,//Discovering
                 Colors.Orange,//Disconnecting
+                Colors.LightBlue,//Sending
                 Colors.DarkRed//Error
             ];
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

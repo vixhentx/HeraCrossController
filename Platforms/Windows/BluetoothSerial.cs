@@ -4,6 +4,7 @@ using InTheHand.Net;
 using InTheHand.Net.Sockets;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
@@ -89,6 +90,10 @@ namespace HeraCrossController.Platforms.Windows
             using var t_client = new BluetoothClient();
             var last_stat = ConnectionStatus;
             ConnectionStatus = ConnectionStatusEnum.Discovering;
+
+            _cts = new CancellationTokenSource();
+            _cts.CancelAfter(TimeSpan.FromSeconds(5));
+
             var devices = await Task.Run(() => t_client.DiscoverDevices(
                 maxDevices: 6
             ));
@@ -106,8 +111,13 @@ namespace HeraCrossController.Platforms.Windows
             if (ConnectionStatus != ConnectionStatusEnum.Connected || _networkStream == null)
                 throw new InvalidOperationException("未连接!");
 
+            ConnectionStatusEnum status = ConnectionStatus;
+            ConnectionStatus = ConnectionStatusEnum.Sending;
+
             await _networkStream.WriteAsync(data.ToArray(), 0, data.Length);
             await _networkStream.FlushAsync();
+
+            ConnectionStatus = status;
         }
         private async void ReceiveDataAsync(CancellationToken token)
         {

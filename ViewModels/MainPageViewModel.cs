@@ -49,11 +49,22 @@ namespace HeraCrossController.ViewModels
                         var all_devices = (await _serial.DiscoverDevicesAsync());
                         List<BluetoothSerialDevice>? devices = all_devices?.Where((d) => d.Name == "HC-02").ToList();
                         DataRecieved += "发现的设备:\n";
-                        if (devices == null) return;
+                        if (devices == null || devices.Count == 0)
+                        {
+                            dialogService.ShowMessageBox("找不到设备");
+                            return;
+                        }
                         foreach (var device in devices)
                         {
                             DataRecieved += $"Name: {device.Name}, Address: {device.Address} \n";
                         }
+                        var target = await dialogService.ShowDevicesAsync(devices);
+                        if (target == null)
+                        {
+                            DataRecieved += "未选择设备 \n";
+                            return;
+                        }
+                        await _serial.ConnectAsync(target);
 
                     }
                     catch(Exception ex)
@@ -65,9 +76,11 @@ namespace HeraCrossController.ViewModels
                 }
                 );
             _sendDataCommand = new Command(
-                execute: () =>
+                execute: async () =>
                 {
-                    throw new NotImplementedException();
+                    byte[] data = Encoding.UTF8.GetBytes(DataToSend + "\n");
+                    await _serial.SendDataAsync(new Memory<byte>(data));
+                    DataToSend = "";
                 },
                 canExecute: () => ConnectionStatus == ConnectionStatusEnum.Connected
                 );
@@ -78,10 +91,11 @@ namespace HeraCrossController.ViewModels
                 }
                 );
             _sendSimpleCommand = new Command(
-                execute: (object arg) =>
+                execute: async (object arg) =>
                 {
                     if (arg == null || arg is not int cmd) return;
-                    
+                    byte[] data = Encoding.UTF8.GetBytes(cmd.ToString() + "\n");
+                    await _serial.SendDataAsync(new Memory<byte>(data));
                 },
                 canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
                 );

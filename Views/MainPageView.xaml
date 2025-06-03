@@ -24,7 +24,7 @@
             <Button Text="清空" Command="{Binding ClearCommand}"/>
             <Line/>
             <Label Text="发送数据:"/>
-            <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="50"/>
+            <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="50" Keyboard="Numeric"/>
             <Button Text="发送" Command="{Binding SendDataCommand}"/>
         </VerticalStackLayout>
         <HorizontalStackLayout>
