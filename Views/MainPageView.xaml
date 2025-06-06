@@ -3,37 +3,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:HeraCrossController.ViewModels"
              xmlns:converters="clr-namespace:HeraCrossController.Converters"
+             xmlns:widgets="clr-namespace:HeraCrossController.Widgets"
              x:Class="HeraCrossController.Views.MainPageView"
              Title="HeraCrossController">
     <ContentPage.Resources>
         <!--#region Converters-->
         <converters:IsExtendedToIsVisableConverter x:Key="IsExtendedToIsVisableConverter"/>
         <converters:ConnectionStatusToTextColorConverter x:Key="ConnectionStatusToTextColorConverter"/>
+        <converters:ConnectionStatusToVisableConverter x:Key="ConnectionStatusToVisableConverter"/>
         <!--#endregion-->
     </ContentPage.Resources>
-    <VerticalStackLayout
+    <ScrollView>
+        <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-        <Grid>
-            <Label Text="{Binding ConnectionStatus}" HorizontalOptions="Start" FontSize="Large" FontAttributes="Bold" TextColor="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusToTextColorConverter}}"/>
-            <Button Text="连接设备" HorizontalOptions="End" Command="{Binding ConnectCommand}"/>
-        </Grid>
-        <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding IsToggled, Source={x:Reference consoleSwitch}, Converter={StaticResource IsExtendedToIsVisableConverter}}">
-            <Label Text="接收数据:"/>
-            <Editor IsReadOnly="True" Text="{Binding DataRecieved}" HeightRequest="100" AutoSize="Disabled"/>
-            <Button Text="清空" Command="{Binding ClearCommand}"/>
-            <Line/>
-            <Label Text="发送数据:"/>
-            <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="50" Keyboard="Numeric"/>
-            <Button Text="发送" Command="{Binding SendDataCommand}"/>
+            <Grid>
+                <Label Text="{Binding ConnectionStatus}" HorizontalOptions="Start" FontSize="Large" FontAttributes="Bold" TextColor="{Binding ConnectionStatus, Converter={StaticResource ConnectionStatusToTextColorConverter}}"/>
+                <Button Text="连接设备" HorizontalOptions="End" Command="{Binding ConnectCommand}"/>
+            </Grid>
+            <VerticalStackLayout x:Name="consolePannel" IsVisible="{Binding IsToggled, Source={x:Reference consoleSwitch}, Converter={StaticResource IsExtendedToIsVisableConverter}}">
+                <Label Text="接收数据:"/>
+                <Editor IsReadOnly="True" Text="{Binding DataRecieved}" HeightRequest="100" AutoSize="Disabled"/>
+                <Button Text="清空" Command="{Binding ClearCommand}"/>
+                <Line Margin="10"/>
+                <Label Text="发送数据:"/>
+                <Editor IsReadOnly="False" Text="{Binding DataToSend}" MinimumHeightRequest="50" Keyboard="Numeric"/>
+                <Button Text="发送" Command="{Binding SendDataCommand}"/>
+            </VerticalStackLayout>
+            <HorizontalStackLayout>
+                <Label Text="控制台:" VerticalTextAlignment="Center"/>
+                <Switch x:Name="consoleSwitch" IsToggled="False"/>
+            </HorizontalStackLayout>
+            <VerticalStackLayout x:Name="controllerPanel" Padding="5" >
+                <FlexLayout Direction="Row" JustifyContent="SpaceEvenly" Padding="10" Wrap="Wrap" IsEnabled="{Binding ConnectionStatus,Converter={StaticResource ConnectionStatusToVisableConverter}}">
+                    <widgets:Toggle Text="Tong" OnText="张开" OffText="夹紧" OnCmd="21" OffCmd="20" Command="{Binding SendSimpleCommand}"/>
+                    <widgets:Toggle Text="Cleave" OnText="放下" OffText="收起" OnCmd="25" OffCmd="26" Command="{Binding SendSimpleCommand}"/>
+                    <widgets:Toggle Text="Neck" OnText="朝前" OffText="朝后" OnCmd="22" OffCmd="23" Command="{Binding SendSimpleCommand}"/>
+
+                    <Button Text="抓取" Command="{Binding SendSimpleCommand}" CommandParameter="80"/>
+                    <Button Text="扫描" Command="{Binding SendSimpleCommand}" CommandParameter="60"/>
+                    <Button Text="安全举手" Command="{Binding SendSimpleCommand}" CommandParameter="82"/>
+                    <Button Text="自救" Command="{Binding SendSimpleCommand}" CommandParameter="83"/>
+                </FlexLayout>
+                <FlexLayout Margin="0,170" Direction="Column" JustifyContent="SpaceEvenly" Padding="10">
+                    <widgets:Linear Command="{Binding SendLinearCommand}" CmdChannel="101" Maximum="255" Minimum="-255" Divide="16" WidthRequest="250"/>
+                    <widgets:Linear Command="{Binding SendLinearCommand}" CmdChannel="102" Maximum="255" Minimum="-255" Divide="16" WidthRequest="250"/>
+                </FlexLayout>
+            </VerticalStackLayout>
         </VerticalStackLayout>
-        <HorizontalStackLayout>
-            <Label Text="控制台:" VerticalTextAlignment="Center"/>
-            <Switch x:Name="consoleSwitch" IsToggled="False"/>
-        </HorizontalStackLayout>
-        <FlexLayout x:Name="controllerPanel">
-
-        </FlexLayout>
-    </VerticalStackLayout>
-
+    </ScrollView>
 </ContentPage>

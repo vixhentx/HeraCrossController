@@ -12,7 +12,7 @@ namespace HeraCrossController.ViewModels
         public string DataRecieved { get; set; }
         public string DataToSend { get; set; }
 
-        protected readonly Command _connectCommand, _sendDataCommand, _clearCommand, _sendSimpleCommand;
+        protected readonly Command _connectCommand, _sendDataCommand, _clearCommand, _sendSimpleCommand, _sendLinearCommand;
 
         [DoNotNotify]
         public Command ConnectCommand => _connectCommand;
@@ -22,6 +22,8 @@ namespace HeraCrossController.ViewModels
         public Command ClearCommand => _clearCommand;
         [DoNotNotify]
         public Command SendSimpleCommand => _sendSimpleCommand;
+        [DoNotNotify]
+        public Command SendLinearCommand => _sendLinearCommand;
 
 
         private readonly IBluetoothSerial _serial;
@@ -93,8 +95,20 @@ namespace HeraCrossController.ViewModels
             _sendSimpleCommand = new Command(
                 execute: async (object arg) =>
                 {
-                    if (arg == null || arg is not int cmd) return;
-                    byte[] data = Encoding.UTF8.GetBytes(cmd.ToString() + "\n");
+                    if (arg == null) return;
+                    byte[] data;
+                    if (arg is int cmd) data = Encoding.UTF8.GetBytes(cmd.ToString() + "\n");
+                    else if (arg is string str) data = Encoding.UTF8.GetBytes(str + "\n");
+                    else return;
+                        await _serial.SendDataAsync(new Memory<byte>(data));
+                },
+                canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
+                );
+            _sendLinearCommand = new Command(
+                execute: async (object arg) =>
+                {
+                    if (arg == null || arg is not LinearParameter para) return;
+                    byte[] data = Encoding.UTF8.GetBytes($"{para.CmdChannel*100+para.Value}\n");
                     await _serial.SendDataAsync(new Memory<byte>(data));
                 },
                 canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
@@ -105,6 +119,7 @@ namespace HeraCrossController.ViewModels
         {
             SendDataCommand.ChangeCanExecute();
             SendSimpleCommand.ChangeCanExecute();
+            SendLinearCommand.ChangeCanExecute();
         }
         void OnRecievedData(object? sender, Memory<byte> e)
         {
