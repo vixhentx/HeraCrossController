@@ -122,8 +122,11 @@ namespace HeraCrossController.ViewModels
                     {
                         rspeed = rspeed * (LRValue) / 255;
                     }
-                    byte[] datal = Encoding.UTF8.GetBytes($"{101} {lspeed}\n");
-                    byte[] datar = Encoding.UTF8.GetBytes($"{102} {rspeed}\n");
+                    //防止符号恶心人
+                    lspeed += 255;
+                    rspeed += 255;
+                    byte[] datal = Encoding.UTF8.GetBytes($"{101*512+lspeed}\n");
+                    byte[] datar = Encoding.UTF8.GetBytes($"{102*512+rspeed}\n");
                     await _serial.SendDataAsync(new Memory<byte>(datal));
                     await _serial.SendDataAsync(new Memory<byte>(datar));
                 },
