@@ -45,10 +45,14 @@
                     <Button Text="安全举手" Command="{Binding SendSimpleCommand}" CommandParameter="82"/>
                     <Button Text="自救" Command="{Binding SendSimpleCommand}" CommandParameter="83"/>
                 </FlexLayout>
-                <FlexLayout Margin="0,170" Direction="Column" JustifyContent="SpaceEvenly" Padding="10">
-                    <widgets:Linear Command="{Binding SendLinearCommand}" CmdChannel="101" Maximum="255" Minimum="-255" Divide="16" WidthRequest="250"/>
-                    <widgets:Linear Command="{Binding SendLinearCommand}" CmdChannel="102" Maximum="255" Minimum="-255" Divide="16" WidthRequest="250"/>
-                </FlexLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <widgets:Linear Direction="Vertical" MinimumHeightRequest="300" Margin="20" WidthRequest="60" Grid.Column="0"/>
+                    <widgets:Linear Direction="Horizonal" MinimumWidthRequest="300" HeightRequest="60" Grid.Column="1"/>
+                </Grid>
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

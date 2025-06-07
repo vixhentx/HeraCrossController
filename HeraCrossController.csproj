@@ -78,9 +78,6 @@
 	  <MauiXaml Update="Views\DeviceSelectView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Widgets\Linear.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Widgets\Toggle.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

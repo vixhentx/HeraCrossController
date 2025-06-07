@@ -108,7 +108,7 @@ namespace HeraCrossController.ViewModels
                 execute: async (object arg) =>
                 {
                     if (arg == null || arg is not LinearParameter para) return;
-                    byte[] data = Encoding.UTF8.GetBytes($"{para.CmdChannel*100+para.Value}\n");
+                    byte[] data = Encoding.UTF8.GetBytes($"{para.CmdChannel*1000+para.Value}\n");
                     await _serial.SendDataAsync(new Memory<byte>(data));
                 },
                 canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
