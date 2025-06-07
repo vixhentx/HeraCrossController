@@ -1,3 +1,5 @@
+using System.Windows.Input;
+
 namespace HeraCrossController.Widgets;
 
 public class Linear : GraphicsView
@@ -24,6 +26,9 @@ public class Linear : GraphicsView
 	}
 	public int MaxValue { get; set; }
 	public int MinValue { get; set; }
+	public int Divide { get; set; } = 16;
+	public int CmdChannel { get; set; } = 103;
+	public ICommand? ValueChangedCommand { get; set; }
 	private Drawables.LinearDrawable _drawable = new();
 	private DirectionEnum _direction;
     private PointF Center => new()
@@ -47,11 +52,11 @@ public class Linear : GraphicsView
 			ChangeValue(_drawable.Touch = (PointF)(startPoint - Center));
 			Invalidate();
 		};
-		DragInteraction += (sender, e) =>
-		{
-			ChangeValue(_drawable.Touch = (PointF)(e.Touches.FirstOrDefault() - Center));
-			Invalidate();
-		};
+		//DragInteraction += (sender, e) =>
+		//{
+		//	ChangeValue(_drawable.Touch = (PointF)(e.Touches.FirstOrDefault() - Center));
+		//	Invalidate();
+		//};
 		EndInteraction += (sender, e) =>
 		{
 			ChangeValue(_drawable.Touch = PointF.Zero);
@@ -103,7 +108,15 @@ public class Linear : GraphicsView
 			_ => throw new NotImplementedException()
 		};
 		int span = MaxValue - MinValue;
-		Value = (int)(p * span) + MinValue;
-	}
+		int newValue = (int)(p * span) + MinValue;
+		if(Value/Divide != newValue/Divide)
+		{
+			Value = newValue;
+			if(ValueChangedCommand != null && ValueChangedCommand.CanExecute(1))
+			{
+                ValueChangedCommand.Execute(CmdChannel);
+            }
+        }
+    }
 
 }

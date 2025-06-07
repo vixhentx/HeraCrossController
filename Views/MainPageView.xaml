@@ -50,8 +50,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <widgets:Linear Direction="Vertical" MinimumHeightRequest="300" Margin="20" WidthRequest="60" Grid.Column="0"/>
-                    <widgets:Linear Direction="Horizonal" MinimumWidthRequest="300" HeightRequest="60" Grid.Column="1"/>
+                    <widgets:Linear Direction="Vertical" Value="{Binding FBValue}" ValueChangedCommand="{Binding SendLinearCommand}" MaxValue="255" MinValue="-255" MinimumHeightRequest="300" Margin="20" WidthRequest="60" Grid.Column="0"/>
+                    <widgets:Linear Direction="Horizonal" Value="{Binding LRValue}" ValueChangedCommand="{Binding SendLinearCommand}" MaxValue="255" MinValue="-255" MinimumWidthRequest="300" HeightRequest="60" Grid.Column="1"/>
                 </Grid>
             </VerticalStackLayout>
         </VerticalStackLayout>

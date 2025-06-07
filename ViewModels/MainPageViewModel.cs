@@ -11,6 +11,8 @@ namespace HeraCrossController.ViewModels
         public ConnectionStatusEnum ConnectionStatus { get; set; }
         public string DataRecieved { get; set; }
         public string DataToSend { get; set; }
+        public int FBValue { get; set; }
+        public int LRValue { get; set; }
 
         protected readonly Command _connectCommand, _sendDataCommand, _clearCommand, _sendSimpleCommand, _sendLinearCommand;
 
@@ -104,12 +106,26 @@ namespace HeraCrossController.ViewModels
                 },
                 canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
                 );
+            //注意,这里并不是通用的设计
             _sendLinearCommand = new Command(
                 execute: async (object arg) =>
                 {
-                    if (arg == null || arg is not LinearParameter para) return;
-                    byte[] data = Encoding.UTF8.GetBytes($"{para.CmdChannel*1000+para.Value}\n");
-                    await _serial.SendDataAsync(new Memory<byte>(data));
+                    //if (arg == null || arg is not int cmd) return;
+                    //左摇杆为主速度,右摇杆为速度的抑制
+                    int lspeed, rspeed;
+                    lspeed = rspeed = FBValue;
+                    if(LRValue < 0)
+                    {
+                        lspeed = lspeed * (-LRValue) / 255;
+                    }
+                    else if(LRValue > 0)
+                    {
+                        rspeed = rspeed * (LRValue) / 255;
+                    }
+                    byte[] datal = Encoding.UTF8.GetBytes($"{101} {lspeed}\n");
+                    byte[] datar = Encoding.UTF8.GetBytes($"{102} {rspeed}\n");
+                    await _serial.SendDataAsync(new Memory<byte>(datal));
+                    await _serial.SendDataAsync(new Memory<byte>(datar));
                 },
                 canExecute: (object arg) => ConnectionStatus == ConnectionStatusEnum.Connected
                 );
@@ -125,5 +141,6 @@ namespace HeraCrossController.ViewModels
         {
             DataRecieved+=$"[HC-02]: {Encoding.UTF8.GetString(e.ToArray(), 0, e.Length)} \n";
         }
+
     }
 }
